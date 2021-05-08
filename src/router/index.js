@@ -10,6 +10,7 @@ import filmsRoutes from "./modules/films";
 import cinemasRoutes from "./modules/cinemas";
 import centerRoutes from "./modules/center";
 import cityRoutes from "./modules/city";
+import messageRoutes from "./modules/message";
 
 Vue.use(VueRouter)
 
@@ -36,7 +37,10 @@ const routes = [
   ...centerRoutes,
 
   //城市
-  ...cityRoutes
+  ...cityRoutes,
+
+  //资讯
+  ...messageRoutes,
 
 
 ]

@@ -1,17 +1,150 @@
 <template>
-    <!-- 视图部分 -->
-    <div>即将上映</div>
+  <!-- 视图部分 -->
+  <div class="main">
+    <!-- 不要联通van-cell一起复制过来 -->
+    <van-list>
+      <!-- 展示正在热映列表 -->
+      <van-card v-for="item in list" :key="item.filmId">
+        <template #desc>
+          <div class="leftBox">
+            <div class="label">主演：{{ item.actors | parseActors }}</div>
+            <div class="label">
+              上映日期:
+              <span>{{ item.premiereAt | formatDate(item.premiereAt) }}</span>
+            </div>
+          </div>
+        </template>
+        <template #title>
+          <div class="title">
+            {{ item.name }} <span class="item">{{ item.item.name }}</span>
+          </div>
+        </template>
+        <template #thumb>
+          <img :src="item.poster" alt="" width="66" />
+        </template>
+        <template #tags>
+          <van-tag plain class="buy">预约</van-tag>
+        </template>
+      </van-card>
+    </van-list>
+  </div>
 </template>
 
 
 <script>
-//逻辑部分
+import Vue from "vue";
+import { Card, Tag, List } from "vant";
+
+Vue.use(Card);
+Vue.use(Tag);
+Vue.use(List);
+
+import uri from "@/config/uri";
+// 引入axios
+// import axios from "axios";
+// 为了方便后续，不必再每个组件中都需要import axios,对axios进行封装
+// 逻辑部分
 export default {
-    
-}
+  data() {
+    return {
+      //默认页码
+      pageNum: 1,
+      //电影列表
+      list: [],
+    };
+  },
+  methods: {},
+  created() {
+    this.$http.get(uri.getComingSoon).then((ret) => {
+      this.list = ret.data.films;
+    });
+  },
+  //过滤器 处理数据格式
+  filters: {
+    //解析主演
+    parseActors(actors) {
+      //动画片可能没有演员
+      let str = "";
+      if (actors) {
+        actors.forEach((el) => {
+          str += el.name + " ";
+        });
+      } else {
+        str = "暂无主演";
+      }
+      //注意长度的截取
+      return str.length > 16 ? str.substr(0, 16) + "..." : str;
+    },
+    formatDate(time) {
+      var date = new Date(time * 1000);
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      var x = date.getDay() - 1;
+      var xq = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+      var z = xq[x];
+      return z + " " + m + "月" + d + "日";
+    },
+  },
+};
 </script>
 
 
 <style lang="scss" scoped>
 /* 样式部分 */
+.van-card__thumb img {
+  border-radius: 0px;
+}
+.main {
+  margin-top: 6px;
+  margin-bottom: 50px;
+}
+.van-card__thumb {
+  margin-right: 0;
+}
+
+.title {
+  color: #191a1b;
+  font-size: 16px;
+  height: 22px;
+  line-height: 22px;
+  margin-top: 10px;
+  margin-left: -8px;
+}
+.desc {
+  font-size: 13px;
+  color: #797d82;
+}
+.grade {
+  color: #ffb232;
+  font-size: 14px;
+}
+.label {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #797d82;
+}
+.item {
+  font-size: 9px;
+  color: #fff;
+  background-color: #d2d6dc;
+  height: 14px;
+  line-height: 14px;
+  padding: 0 4px;
+  border-radius: 2px;
+}
+.buy {
+  line-height: 25px;
+  height: 25px;
+  padding: 0 10px;
+  color: #ffb232;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 4px;
+  position: absolute;
+  right: -6px;
+  top: 30px;
+}
+.leftBox {
+  margin-left: -8px;
+}
 </style>

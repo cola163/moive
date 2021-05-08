@@ -5,5 +5,5 @@ let prefix = "/api"
 export default {
     getCityInfo: prefix + "/getCitiesInfo",
     getNowPlaying: prefix + "/getNowPlayingFilmList",
-
+    getComingSoon: prefix + "/getComingSoonFilmList"
 }
